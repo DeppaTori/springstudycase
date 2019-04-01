@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{fragments/main_layout}">
+<head>
+    <title>User List | Spring Study Case</title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+
+    <div class="panel panel-default">
+			<div class="panel-heading">User List</div>
+			<div class="panel-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">User name</th>
+					
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${users.empty}">
+							<td scope="row" colspan="3">No User Available</td>
+						</tr>
+						<tr th:each="user : ${users}">
+							<td scope="row"><span th:text="${user.username}">
+									Username </span>
+							</td>
+							
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+</div>
+</body>
+</html>
