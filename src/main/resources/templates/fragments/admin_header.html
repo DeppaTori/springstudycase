@@ -10,16 +10,17 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" th:href="@{/admin/}" href="#">Admin Panel</a>
+                <a sec:authorize="hasAuthority('USER_WRITE_PRIVILEGE')" class="navbar-brand" th:href="@{/admin/}" href="#">Admin Panel</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li class="active"><a th:href="@{/}" href="#">Visit Site</a></li>
-                    <li><a th:href="@{/admin/user_add}" href="#">Add New User</a></li>
+                    <li sec:authorize="hasAuthority('USER_WRITE_PRIVILEGE')"><a th:href="@{/admin/user_add}" href="#">Add New User</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
-            
+            		<li>Welcome, <span sec:authentication="name">Bob</span></li>
+					<li>&nbsp;</li>
                     <li><form th:action="@{/logout}" method="post">
 		<input type="hidden" name="${_csrf.parameterName}"
 			value="${_csrf.token}" /> <input type="submit" value="Logout">

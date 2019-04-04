@@ -4,14 +4,17 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -22,29 +25,38 @@ public class User implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue
-	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="user_id")
 	private Long id;
 	
-	@Column(name="user_name")
+	@Column(name="username")
 	@NotNull
 	@Size(min=3, max=30)
 	private String username;
 	
 	@Column(name="password")
 	@NotNull
-	@Size(min=5, max=30)
+	@Size(min=5, max=100)
 	private String password;
 	
-	@Transient
-	private String[] roles;
+
 	
-	@OneToMany(mappedBy="user",fetch= FetchType.EAGER)
-    private Set<UserRole> userRoles;
+	@ManyToMany(cascade = { CascadeType.PERSIST,CascadeType.MERGE })
+    @JoinTable(
+        name = "user_role", 
+        joinColumns = { @JoinColumn(name = "user_id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "role_id") }
+    )
+    private Set<Role> roles = new HashSet<Role>();
 	
 	public User() {
 		super();
 
+	}
+	
+	public User(Long id) {
+		super();
+		this.id = id;
 	}
 	
 	public User(String username,String password) {
@@ -78,34 +90,23 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
 
 	@Override
 	public String toString() {
 		return "[id:"+id+" ,username: "+username+", password: "+password+"]";
 	}
 
-	public String[] getRoles() {
-		return roles;
-	}
-
-	public void setRoles(String[] roles) {
-		this.roles = roles;
-	}
-
-	public Set<UserRole> getUserRoles() {
-		return userRoles;
-	}
-
-	public void setUserRoles(Set<UserRole> userRoles) {
-		this.userRoles = userRoles;
-	}
 	
-	public void addUserRole(UserRole userRole) {
-		if(userRoles==null) {
-			userRoles = new HashSet<UserRole>();
-		}
-		this.userRoles.add(userRole);
-	}
 
 	
 	

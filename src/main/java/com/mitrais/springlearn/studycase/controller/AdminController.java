@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mitrais.springlearn.studycase.model.User;
+import com.mitrais.springlearn.studycase.service.RoleService;
 import com.mitrais.springlearn.studycase.service.UserService;
 
 @Controller
@@ -26,16 +29,20 @@ import com.mitrais.springlearn.studycase.service.UserService;
 public class AdminController {
 	
 	@Autowired
+	@Qualifier("userServiceJPA")
 	UserService userService;
 	
-
+	@Autowired
+	RoleService roleService;
 	
+
+	@PreAuthorize("hasAuthority('USER_WRITE_PRIVILEGE')")
 	@GetMapping("/")
 	public String userList(Model model,Principal principal) {
 	
 		List<User> user = userService.list();
 		Map modelMap = model.asMap();
-	
+		
 		model.addAttribute("flash_status",modelMap.get("status"));
 		model.addAttribute("flash_message",modelMap.get("message"));
 		model.addAttribute("username_logged",principal.getName());
@@ -43,20 +50,25 @@ public class AdminController {
 		return "admin/userlist";
 	}
 	
+	@PreAuthorize("hasAuthority('USER_WRITE_PRIVILEGE')")
 	@GetMapping("/user_add")
 	public String addUser(Model model) {
 		model.addAttribute("user",new User());
+		
+		model.addAttribute("roles_select",roleService.findAll());
 		return "admin/userform";
 	}
 	
+	@PreAuthorize("hasAuthority('USER_WRITE_PRIVILEGE')")
 	@GetMapping("/user/{id}/edit")
 	public String getEditUser(@PathVariable(value="id") String id,Model model) {
 		User user = userService.find(Long.parseLong(id));
-	
+		model.addAttribute("roles_select",roleService.findAll());
 		model.addAttribute("user",user);
 		return "admin/userform";
 	}
 	
+	@PreAuthorize("hasAuthority('USER_WRITE_PRIVILEGE')")
 	@PostMapping("/user/postuser")
 	public String postUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult ,
 			@RequestParam("retype_password") String retypePassword,Model model,
@@ -84,6 +96,7 @@ public class AdminController {
 		return "redirect:/admin/";
 	}
 	
+	@PreAuthorize("hasAuthority('USER_DELETE_PRIVILEGE')")
 	@GetMapping("/user/{id}/delete")
 	public String deleteUser(@PathVariable("id") Long id, RedirectAttributes attributes) {
 		String deleteMessage = userService.delete(id);

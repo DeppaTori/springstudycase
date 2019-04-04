@@ -12,6 +12,8 @@ $(document).ready(function() {
 
 		// get selected option
 		var role = $('#selectrole_id').find(":selected").val();
+		var roleText = $('#selectrole_id').find(":selected").text();
+		
 		
 		//get user role
 		var found = 0;
@@ -20,7 +22,7 @@ $(document).ready(function() {
 		    var $span = $(this);
 		    var roleFound = $span.text()
 		    userRoles.push(roleFound);
-		    if(roleFound==role){
+		    if(roleFound==roleText){
 		    	found++;
 		    }
 		    
@@ -34,7 +36,7 @@ $(document).ready(function() {
 			
 			
 			
-			$( "#roleList" ).append( "<span><span class=\"role_body btn btn-default\" > <span class=\"role_value\">"+role+"</span> <a class=\"delete_role btn btn-danger btn-xs\" href=\"#\"><span class=\"glyphicon glyphicon-remove-sign\">Delete</span></a></span></span>" );
+			$( "#roleList" ).append( "<span><span class=\"role_body btn btn-default\" > <span class=\"role_value\" in_role_value=\""+role+"\">"+roleText+"</span> <a class=\"delete_role btn btn-danger btn-xs\" href=\"#\"><span class=\"glyphicon glyphicon-remove-sign\">Delete</span></a></span></span>" );
 			
 			updateInputRoles();
 			
@@ -70,7 +72,7 @@ $(document).ready(function() {
 		var userRoles = [];
 		$('#roleList span span span.role_value').each(function(){
 		    var $span = $(this);
-		    var roleFound = $span.text()
+		    var roleFound = $span.attr("in_role_value");
 		    userRoles.push(roleFound);
 		    
 		});

@@ -16,7 +16,7 @@
 				<ul class="nav navbar-nav">
 					<li class="active"><a th:href="@{/}" href="/">Home</a></li>
 					<li><a th:href="@{/user_list}" href="/user_list">User list</a></li>
-					<li><a th:href="@{/admin/}" href="/admin/">Admin Panel</a></li>
+					<li sec:authorize="hasAuthority('USER_WRITE_PRIVILEGE')"><a th:href="@{/admin/}" href="/admin/">Admin Panel</a></li>
 
 				</ul>
 

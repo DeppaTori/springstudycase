@@ -30,18 +30,19 @@
 						</tr>
 						<tr th:each="user : ${users}">
 							<td scope="row"><span th:text="${user.username}">
-									Username </span></td>
+									Username </span> </td>
 							<td scope="row">
-								<span th:each="userRole : ${user.userRoles}">
-									<span th:text="${userRole.role}"></span>, 
+								<span th:each="userRole : ${user.roles}">
+									<span th:text="${userRole.name}"></span>, 
 								</span>
 							</td>
-							<td scope="row"><span> <a
+							<td scope="row"><span sec:authorize="hasAuthority('USER_WRITE_PRIVILEGE')"> <a
 									th:href="@{'/admin/user/'+${user.id}+'/edit'}" href="#">Edit
 								</a>
 							</span></td>
 							<td scope="row">
-								<span th:if="${username_logged}!=${user.username}"> <a class="delete_link"
+							
+								<span th:if="${username_logged}!=${user.username}" sec:authorize="hasAuthority('USER_WRITE_PRIVILEGE')"> <a class="delete_link"
 									th:href="@{'/admin/user/'+${user.id}+'/delete'}" href="#">
 										Delete </a>
 								</span>

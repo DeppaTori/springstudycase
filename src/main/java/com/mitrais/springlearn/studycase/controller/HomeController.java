@@ -2,9 +2,10 @@ package com.mitrais.springlearn.studycase.controller;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,11 @@ import com.mitrais.springlearn.studycase.service.UserService;
 @RequestMapping("/")
 public class HomeController {
 	
+//	@Autowired
+//	UserService userService;
+	
 	@Autowired
+	@Qualifier("userServiceJPA")
 	UserService userService;
 	
 	@GetMapping
@@ -28,6 +33,8 @@ public class HomeController {
 		return "home/index";
 	}
 	
+	
+	@PreAuthorize("hasAuthority('USER_READ_PRIVILEGE')")
 	@GetMapping("/user_list")
 	public String userList(Principal principal,Model model) {
 		String userName = principal != null?principal.getName():null;
@@ -53,5 +60,9 @@ public class HomeController {
 	public void logout() {
 
 	}
+	
+	
+	
+	
 
 }
